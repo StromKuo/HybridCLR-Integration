@@ -1,0 +1,14 @@
+{
+  "name": "com.strodio.hybridclr-integration",
+  "version": "0.0.1",
+  "displayName": "HybridCLR Integration",
+  "description": "HybridCLR Integration for Unity",
+  "unity": "2021.2",
+  "author": {
+    "name": "Strom"
+  },
+  "dependencies": {
+    "com.unity.addressables": "1.21.20",
+    "com.code-philosophy.hybridclr": "6.3.0"
+  }
+}

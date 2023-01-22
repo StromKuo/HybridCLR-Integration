@@ -1,0 +1,20 @@
+{
+    "name": "HybridCLRIntegration.Editor",
+    "rootNamespace": "HybridCLRIntegration.Editor",
+    "references": [
+        "GUID:2373f786d14518f44b0f475db77ba4de",
+        "GUID:13ba8ce62aa80c74598530029cb2d649",
+        "GUID:80dd0af0a3c2a4b43befc78510b46bd0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

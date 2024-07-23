@@ -11,6 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
+        persist-credential: false
         fetch-depth: 0
     - name: Action For Semantic Release
       uses: cycjimmy/semantic-release-action@v4

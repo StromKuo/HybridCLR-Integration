@@ -1,6 +1,6 @@
 {
   "name": "com.strodio.hybridclr-integration",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "displayName": "HybridCLR Integration",
   "description": "HybridCLR Integration for Unity",
   "unity": "2021.2",

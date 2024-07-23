@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.2...v0.0.3) (2024-07-23)
+
+
+### Bug Fixes
+
+* add missing .meta file ([a14f130](https://github.com/StromKuo/HybridCLR-Integration/commit/a14f13001bdb7160956a1d1015bc965eed0f1159))
+
 ## [0.0.2](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.1...v0.0.2) (2024-07-23)
 
 

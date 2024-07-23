@@ -1,3 +1,10 @@
+## [0.0.4](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.3...v0.0.4) (2024-07-23)
+
+
+### Reverts
+
+* Revert "test ci" ([6627c8d](https://github.com/StromKuo/HybridCLR-Integration/commit/6627c8d57c397f74bf219d7639f996241861e26f))
+
 ## [0.0.3](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.2...v0.0.3) (2024-07-23)
 
 

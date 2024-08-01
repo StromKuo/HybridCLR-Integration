@@ -70,7 +70,21 @@ namespace HybridCLRIntegration
                 }
             }
 
-            return result;
+            // Define the sorting order
+            var sortedLoadTypes = new List<RuntimeInitializeLoadType>
+            {
+                RuntimeInitializeLoadType.SubsystemRegistration,
+                RuntimeInitializeLoadType.AfterAssembliesLoaded,
+                RuntimeInitializeLoadType.BeforeSplashScreen,
+                RuntimeInitializeLoadType.BeforeSceneLoad,
+                RuntimeInitializeLoadType.AfterSceneLoad
+            };
+
+            // Sort according to the defined order
+            var sortedResult = result.OrderBy(kv => sortedLoadTypes.IndexOf(kv.Key))
+                .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+            return sortedResult;
         }
     }
 }

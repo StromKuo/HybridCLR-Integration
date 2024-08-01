@@ -1,3 +1,10 @@
+# [0.1.0](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.4...v0.1.0) (2024-08-01)
+
+
+### Features
+
+* Sort collected runtime initialize methods by loadType ([5240fe5](https://github.com/StromKuo/HybridCLR-Integration/commit/5240fe5fd6c36dd62df457443dc21c30268e61d8))
+
 ## [0.0.4](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.3...v0.0.4) (2024-07-23)
 
 

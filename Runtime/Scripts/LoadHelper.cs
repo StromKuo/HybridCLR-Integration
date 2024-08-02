@@ -60,12 +60,6 @@ namespace HybridCLRIntegration
 
         public static async Task<bool> LoadMetadataForAOTAssemblyAsync(LauncherConfig launcherConfig, ProgressCallback progressCallback, int maxRetryCount, int retryDelayMilliseconds)
         {
-            
-            if (Application.isEditor)
-            {
-                return true;
-            }
-            
             var ret = false;
             
             int retryCount = 0;
@@ -101,6 +95,11 @@ namespace HybridCLRIntegration
                     }
                     await Task.Delay(retryDelayMilliseconds); // Wait for a period of time and then retry.
                 }
+            }
+            
+            if (Application.isEditor)
+            {
+                return true;
             }
 
             return ret;

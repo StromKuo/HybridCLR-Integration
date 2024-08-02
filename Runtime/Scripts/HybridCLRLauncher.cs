@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -20,6 +21,10 @@ namespace HybridCLRIntegration
 
         [SerializeField]
         private Text _progressTitle;
+
+        private float _progressValue;
+        
+        private string _progressTitleStr;
         
         async void Start()
         {
@@ -34,17 +39,23 @@ namespace HybridCLRIntegration
             Addressables.LoadSceneAsync(this._config.targetLaunchScene);
         }
 
+        private void Update()
+        {
+            if (this._progressTitle != null) this._progressTitle.text = this._progressTitleStr;
+            
+            if (this._progress != null) this._progress.value = this._progressValue;
+        }
+
         void OnLoadAssemblyProgress(float progress)
         {
-            if (this._progressTitle != null) this._progressTitle.text = "Loading Assemblies...";
-            
-            if (this._progress != null) this._progress.value = progress;
+            this._progressValue = progress / 2f;
+            this._progressTitleStr = "Loading Assemblies...";
         }
         
         void OnLoadMetadataProgress(float progress)
         {
-            if (this._progressTitle != null) this._progressTitle.text = "Loading AOT Metadata...";
-            if (this._progress != null) this._progress.value = progress;
+            this._progressValue = progress / 2f + 0.5f;
+            this._progressTitleStr = "Loading Assemblies...";
         }
         
         static Dictionary<RuntimeInitializeLoadType, List<MethodInfo>> CollectRuntimeInitializeMethods(IEnumerable<Assembly> assemblies)

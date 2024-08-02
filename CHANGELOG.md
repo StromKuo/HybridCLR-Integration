@@ -1,3 +1,10 @@
+## [0.1.1](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.1.0...v0.1.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* resolve UGUI thread safety issue and optimize progress bar update ([c81c1b0](https://github.com/StromKuo/HybridCLR-Integration/commit/c81c1b010aa383593f3ccb0dcef6ef5edcb8e2a0))
+
 # [0.1.0](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.0.4...v0.1.0) (2024-08-01)
 
 

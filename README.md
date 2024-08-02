@@ -1,1 +1,3 @@
 # HybridCLR-Integration
+
+[![GitHub Actions](https://github.com/StromKuo/HybridCLR-Integration/actions/workflows/ci.yml/badge.svg)](https://github.com/StromKuo/HybridCLR-Integration/actions) ![Releases](https://img.shields.io/github/release/StromKuo/HybridCLR-Integration.svg) [![openupm](https://img.shields.io/npm/v/com.strodio.hybridclr-integration?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.strodio.hybridclr-integration/)

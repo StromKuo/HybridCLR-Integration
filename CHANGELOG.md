@@ -1,3 +1,10 @@
+# [0.2.0](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.1.1...v0.2.0) (2024-08-05)
+
+
+### Features
+
+* **progress:** add detailed loading progress statistics ([9bd00e0](https://github.com/StromKuo/HybridCLR-Integration/commit/9bd00e0d200174a79e600404c99694a3f677fc87))
+
 ## [0.1.1](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.1.0...v0.1.1) (2024-08-02)
 
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
@@ -11,10 +12,10 @@ namespace HybridCLRIntegration
     public class HybridCLRLauncher : MonoBehaviour
     {
         private const int MaxRetryCount = 3;
-        private const int RetryDelayMilliseconds = 3000; // 5 seconds
-        
+        private const int RetryDelayMilliseconds = 3000; // 3 seconds
+
         [SerializeField]
-        LauncherConfig _config;
+        private LauncherConfig _config;
 
         [SerializeField]
         private Slider _progress;
@@ -22,66 +23,86 @@ namespace HybridCLRIntegration
         [SerializeField]
         private Text _progressTitle;
 
-        private float _progressValue;
-        
-        private string _progressTitleStr;
-        
-        async void Start()
-        {
-            var (isOk, assemblies) = await LoadHelper.LoadAssembliesAsync(this._config, this.OnLoadAssemblyProgress, MaxRetryCount, RetryDelayMilliseconds);
-            await LoadHelper.LoadMetadataForAOTAssemblyAsync(this._config, this.OnLoadMetadataProgress, MaxRetryCount, RetryDelayMilliseconds);
+        private AssemblyLoader _assemblyLoader;
+        private int _assembly0OrMetadata1;
 
-            var methods = CollectRuntimeInitializeMethods(assemblies);
-            foreach (var m in methods.SelectMany(x => x.Value))
+        private void Start()
+        {
+            _ = this.StartAsync();
+        }
+
+        private async Task StartAsync()
+        {
+            this._assemblyLoader = new AssemblyLoader(this._config);
+            this._assembly0OrMetadata1 = 0;
+            var (isOk, assemblies) =
+                await this._assemblyLoader.LoadAssembliesAsyncWithRetry(MaxRetryCount, RetryDelayMilliseconds);
+
+            if (!isOk)
             {
-                m.Invoke(null, null);
+                Debug.LogError("Failed to load assemblies.");
+                await Task.Delay(TimeSpan.FromMilliseconds(RetryDelayMilliseconds));
+                _ = this.StartAsync();
+                return;
             }
+
+            this._assembly0OrMetadata1 = 1;
+            await this._assemblyLoader.LoadMetadataForAOTAssemblyAsyncWithRetry(MaxRetryCount, RetryDelayMilliseconds);
+
+            var methods = GetRuntimeInitializeMethods(assemblies);
+            foreach (var method in methods.SelectMany(x => x.Value))
+            {
+                method.Invoke(null, null);
+            }
+
             Addressables.LoadSceneAsync(this._config.targetLaunchScene);
         }
 
         private void Update()
         {
-            if (this._progressTitle != null) this._progressTitle.text = this._progressTitleStr;
-            
-            if (this._progress != null) this._progress.value = this._progressValue;
-        }
+            if (this._assemblyLoader == null || !this._assemblyLoader.loadStatus.HasValue) return;
+            if (this._progressTitle == null && this._progress == null) return;
 
-        void OnLoadAssemblyProgress(float progress)
-        {
-            this._progressValue = progress / 2f;
-            this._progressTitleStr = "Loading Assemblies...";
-        }
-        
-        void OnLoadMetadataProgress(float progress)
-        {
-            this._progressValue = progress / 2f + 0.5f;
-            this._progressTitleStr = "Loading Assemblies...";
-        }
-        
-        static Dictionary<RuntimeInitializeLoadType, List<MethodInfo>> CollectRuntimeInitializeMethods(IEnumerable<Assembly> assemblies)
-        {
-            var result = new Dictionary<RuntimeInitializeLoadType, List<MethodInfo>>();
+            var loadStatus = this._assemblyLoader.loadStatus.Value;
+            var suffixStr = this._assembly0OrMetadata1 == 0 ? "Assemblies" : "Metadata";
 
-            foreach (var assembly in assemblies)
+            var titleStr = string.Empty;
+            var progressValue = 0f;
+
+            switch (loadStatus.loadPhase)
             {
-                foreach (var type in assembly.GetTypes())
-                {
-                    foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
-                    {
-                        var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-                        foreach (RuntimeInitializeOnLoadMethodAttribute attribute in attributes)
-                        {
-                            if (!result.ContainsKey(attribute.loadType))
-                            {
-                                result[attribute.loadType] = new List<MethodInfo>();
-                            }
-                            result[attribute.loadType].Add(method);
-                        }
-                    }
-                }
+                case LoadPhase.Loading:
+                    var sizeSuffix = loadStatus.totalBytes > 0 ? $"({BytesToMegabytes(loadStatus.downloadedBytes)}MB/{BytesToMegabytes(loadStatus.totalBytes)}MB)" : string.Empty;
+                    titleStr = loadStatus.isDownloadDone
+                        ? $"Loading {suffixStr}..."
+                        : $"Downloading {suffixStr}...{sizeSuffix}";
+                    progressValue = loadStatus.isDownloadDone
+                        ? loadStatus.percentComplete
+                        : loadStatus.downloadedPercent;
+                    break;
+                case LoadPhase.WaitingRetry:
+                    titleStr = $"Failed to load {suffixStr} and waiting for retry...";
+                    break;
+                case LoadPhase.Failed:
+                    titleStr = $"Failed to load {suffixStr}, will retry...";
+                    break;
             }
 
-            // Define the sorting order
+            this._progressTitle.text = titleStr;
+            this._progress.value = progressValue;
+        }
+
+        private static Dictionary<RuntimeInitializeLoadType, List<MethodInfo>> GetRuntimeInitializeMethods(
+            IEnumerable<Assembly> assemblies)
+        {
+            var result = assemblies
+                .SelectMany(assembly => assembly.GetTypes())
+                .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
+                .SelectMany(method => method.GetCustomAttributes<RuntimeInitializeOnLoadMethodAttribute>(false),
+                    (method, attribute) => new { method, attribute })
+                .GroupBy(x => x.attribute.loadType)
+                .ToDictionary(g => g.Key, g => g.Select(x => x.method).ToList());
+
             var sortedLoadTypes = new List<RuntimeInitializeLoadType>
             {
                 RuntimeInitializeLoadType.SubsystemRegistration,
@@ -91,11 +112,14 @@ namespace HybridCLRIntegration
                 RuntimeInitializeLoadType.AfterSceneLoad
             };
 
-            // Sort according to the defined order
-            var sortedResult = result.OrderBy(kv => sortedLoadTypes.IndexOf(kv.Key))
-                .ToDictionary(kv => kv.Key, kv => kv.Value);
+            return result.OrderBy(kv => sortedLoadTypes.IndexOf(kv.Key)).ToDictionary(kv => kv.Key, kv => kv.Value);
+        }
 
-            return sortedResult;
+        private static double BytesToMegabytes(long bytes)
+        {
+            const double bytesPerMegabyte = 1024 * 1024;
+            double megabytes = bytes / bytesPerMegabyte;
+            return Math.Round(megabytes, 2); 
         }
     }
 }

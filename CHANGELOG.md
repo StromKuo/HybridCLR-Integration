@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.2.0...v0.2.1) (2024-08-23)
+
+
+### Bug Fixes
+
+* resolve InvalidKeyException when loading hot update type assets ([d864f55](https://github.com/StromKuo/HybridCLR-Integration/commit/d864f5501ab1f6111621efe5aa3fe567168ebe59))
+
 # [0.2.0](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.1.1...v0.2.0) (2024-08-05)
 
 

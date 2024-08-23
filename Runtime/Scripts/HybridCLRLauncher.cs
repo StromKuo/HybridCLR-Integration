@@ -55,6 +55,7 @@ namespace HybridCLRIntegration
                 method.Invoke(null, null);
             }
 
+            await Addressables.LoadContentCatalogAsync($"{Addressables.RuntimePath}/catalog.json").Task;
             Addressables.LoadSceneAsync(this._config.targetLaunchScene);
         }
 

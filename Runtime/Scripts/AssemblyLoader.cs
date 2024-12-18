@@ -58,6 +58,9 @@ namespace HybridCLRIntegration
                 }
             }
 
+            Addressables.Release(this._currentOperationHandle);
+            this._currentOperationHandle = null;
+            
             return retAssemblies;
         }
 
@@ -93,6 +96,9 @@ namespace HybridCLRIntegration
                     LogHelper.Log($"LoadMetadataForAOTAssembly:{textAsset.name}. ret:{err}");
                 }
             }
+            
+            Addressables.Release(this._currentOperationHandle);
+            this._currentOperationHandle = null;
         }
 
         private async Task<bool> ExecuteWithRetryAsync(Func<Task> action, int maxRetryCount,

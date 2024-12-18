@@ -1,3 +1,10 @@
+## [0.2.2](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.2.1...v0.2.2) (2024-12-18)
+
+
+### Bug Fixes
+
+* resolve issue with Addressables load handle not being released properly. ([e99e258](https://github.com/StromKuo/HybridCLR-Integration/commit/e99e25868e18ead24c2fecb60996caacda7fc157))
+
 ## [0.2.1](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.2.0...v0.2.1) (2024-08-23)
 
 

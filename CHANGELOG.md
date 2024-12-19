@@ -1,3 +1,10 @@
+## [0.2.3](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.2.2...v0.2.3) (2024-12-19)
+
+
+### Performance Improvements
+
+* distribute assembly loading over multiple frames to improve performance ([f88d586](https://github.com/StromKuo/HybridCLR-Integration/commit/f88d586f044c55720851574dccfbcf25dc0c3285))
+
 ## [0.2.2](https://github.com/StromKuo/HybridCLR-Integration/compare/v0.2.1...v0.2.2) (2024-12-18)
 
 

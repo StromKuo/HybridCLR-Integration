@@ -55,6 +55,8 @@ namespace HybridCLRIntegration
                 {
                     var ass = Assembly.Load(textAsset.bytes);
                     retAssemblies.Add(ass);
+                    
+                    await Task.Yield();
                 }
             }
 
@@ -94,6 +96,8 @@ namespace HybridCLRIntegration
                     var err = RuntimeApi.LoadMetadataForAOTAssembly(textAsset.bytes,
                         HomologousImageMode.SuperSet);
                     LogHelper.Log($"LoadMetadataForAOTAssembly:{textAsset.name}. ret:{err}");
+                    
+                    await Task.Yield();
                 }
             }
             
